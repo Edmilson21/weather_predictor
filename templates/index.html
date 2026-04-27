@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictor del Tiempo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        p.subtitle {
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+        }
+
+        input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus {
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        input::placeholder { color: rgba(255,255,255,0.25); }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.85; }
+
+        #resultado {
+            display: none;
+            margin-top: 24px;
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        #resultado .icono { font-size: 3rem; margin-bottom: 8px; }
+        #resultado .temp { font-size: 2.5rem; font-weight: bold; }
+        #resultado .desc { font-size: 0.95rem; margin-top: 6px; opacity: 0.85; }
+
+        .muy-frio   { background: linear-gradient(135deg, #0f2027, #203a43); color: #a8d8ea; }
+        .frio       { background: linear-gradient(135deg, #1a3a5c, #2d6a9f); color: #cce5ff; }
+        .templado   { background: linear-gradient(135deg, #3a6186, #89a4c7); color: #e8f4f8; }
+        .calido     { background: linear-gradient(135deg, #f7971e, #ffd200); color: #5a3e00; }
+        .muy-calido { background: linear-gradient(135deg, #f7371e, #f97316); color: #fff0e0; }
+
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: 1fr; }
+            .card { padding: 24px; }
+            .field[style] { grid-column: span 1 !important; }
+             
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1><i class="fa-solid fa-sun"></i> Predictor del Tiempo</h1>
+        <p class="subtitle">Introduce los datos climáticos para predecir la temperatura</p>
+
+        <div class="grid">
+            <div class="field">
+                <label>Humedad (0-1)</label>
+                <input type="number" step="0.01" id="humedad" placeholder="Ej: 0.89">
+            </div>
+            <div class="field">
+                <label>Velocidad del viento (km/h)</label>
+                <input type="number" step="0.1" id="velocidad_viento" placeholder="Ej: 14.1">
+            </div>
+            <div class="field">
+                <label>Wind Bearing (°)</label>
+                <input type="number" id="wind_bearing" placeholder="Ej: 251">
+            </div>
+            <div class="field">
+                <label>Visibilidad (km)</label>
+                <input type="number" step="0.1" id="visibilidad" placeholder="Ej: 15.8">
+            </div>
+            <div class="field">
+                <label>Presión (millibars)</label>
+                <input type="number" step="0.1" id="presion" placeholder="Ej: 1015.13">
+            </div>
+            <div class="field">
+                <label>Mes (1-12)</label>
+                <input type="number" id="mes" placeholder="Ej: 1" min="1" max="12">
+            </div>
+            <div class="field" style="grid-column: span 2;">
+                <label>Hora (0-23)</label>
+                <input type="number" id="hora" placeholder="Ej: 9" min="0" max="23">
+            </div>
+        </div>
+
+        <button onclick="predecir()"><i class="fa-solid fa-magnifying-glass"></i> Predecir temperatura</button>
+
+        <div id="resultado">
+            <div class="icono" id="icono"></div>
+            <div class="temp" id="temp"></div>
+            <div class="desc" id="desc"></div>
+        </div>
+    </div>
+
+    <script>
+        async function predecir() {
+            
+        // Este apartado es para validar mis campos
+        const campos = ['humedad', 'velocidad_viento', 'wind_bearing', 'visibilidad', 'presion', 'mes', 'hora'];
+            for (const campo of campos) {
+                if (document.getElementById(campo).value === '') {
+                alert('Por favor rellena todos los campos.');
+            return;
+            }
+        }
+
+        const datos = {
+                humedad: parseFloat(document.getElementById('humedad').value),
+                velocidad_viento: parseFloat(document.getElementById('velocidad_viento').value),
+                wind_bearing: parseFloat(document.getElementById('wind_bearing').value),
+                visibilidad: parseFloat(document.getElementById('visibilidad').value),
+                presion: parseFloat(document.getElementById('presion').value),
+                mes: parseInt(document.getElementById('mes').value),
+                hora: parseInt(document.getElementById('hora').value)
+            };
+
+            const response = await fetch('/weather/predecir/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+
+            const resultado = await response.json();
+            const temp = resultado.temperatura;
+
+            const div = document.getElementById('resultado');
+            const icono = document.getElementById('icono');
+            const tempDiv = document.getElementById('temp');
+            const desc = document.getElementById('desc');
+
+            div.style.display = 'block';
+            div.className = '';
+
+if (temp < 0) {
+    div.classList.add('muy-frio');
+    icono.innerHTML = '<i class="fa-solid fa-snowflake"></i>';
+    desc.textContent = 'Temperatura muy fría'; 
+} else if (temp < 10) {
+    div.classList.add('frio');
+    icono.innerHTML = '<i class="fa-solid fa-cloud"></i>'; 
+    desc.textContent = 'Temperatura fría';
+} else if (temp < 20) {
+    div.classList.add('templado');
+    icono.innerHTML = '<i class="fa-solid fa-cloud-sun"></i>';
+    desc.textContent = 'Temperatura templada';
+} else if (temp < 30) {
+    div.classList.add('calido');
+    icono.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    desc.textContent = 'Temperatura cálida';
+} else {
+    div.classList.add('muy-calido');
+    icono.innerHTML = '<i class="fa-solid fa-temperature-high"></i>';
+    desc.textContent = 'Temperatura muy cálida';
+}
+
+            tempDiv.textContent = `${temp.toFixed(1)} °C`;
+        }
+</script>
+
+</body>
+</html>
