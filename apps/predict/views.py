@@ -6,7 +6,7 @@ from rest_framework import status
 from .serializers import PredictionSerializer
 from django.shortcuts import render
 import os
-from predict.train import entrenar_modelo
+from apps.predict.train import entrenar_modelo
 
 # Cargar el modelo entrenado
 if not os.path.exists('modelo/weather_model.pkl'):
