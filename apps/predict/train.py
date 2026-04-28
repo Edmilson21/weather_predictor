@@ -8,6 +8,9 @@ import os
 
 def entrenar_modelo():
     df = pd.read_csv('dataset/weatherHistory.csv')
+
+    # Usar solo 20k filas para entrenar más rápido en el server de render
+    df = df.sample(n=20000, random_state=42)
     
     df['Formatted Date'] = pd.to_datetime(df['Formatted Date'], utc=True)
     df['mes'] = df['Formatted Date'].dt.month
@@ -24,6 +27,6 @@ def entrenar_modelo():
     model = RandomForestRegressor(n_estimators=50, random_state=42)
     model.fit(X_train, y_train)
     
-    os.makedirs('modelo', exist_ok=True)
+    os.makedirs('modelo', exist_ok=True) 
     joblib.dump(model, 'modelo/weather_model.pkl')
     print("Modelo entrenado y guardado") 
