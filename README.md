@@ -46,7 +46,7 @@ Weather History Dataset — 96.453 registros, variables climáticas como humedad
 ## Instalación local
 
 ```bash
-git clone https://github.com/Edmilson21/weather-predictor
+git clone https://github.com/Edmilson21/weather_predictor
 cd weather-predictor
 pip install -r requirements.txt
 python manage.py migrate
