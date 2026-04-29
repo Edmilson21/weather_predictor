@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False)
 
 #ALLOWED_HOSTS = [] 
-ALLOWED_HOSTS = ['weather-predictor-mdie.onrender.com'] 
+ALLOWED_HOSTS = ['weather-predictor-p8qp.onrender.com'] 
 
 
 # Application definition
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles', 
     'rest_framework',
     'apps.predict',
 ]
