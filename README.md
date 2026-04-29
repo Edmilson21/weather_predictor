@@ -8,6 +8,7 @@ API REST para predecir la temperatura basada en datos climáticos, construida co
 ## Interfaz
 <img width="867" height="878" alt="Captura de pantalla (228)" src="https://github.com/user-attachments/assets/09e9bae7-5c12-48d8-9d16-778ef18038c4" />
 <hr>
+
 ## Tecnologías
 - Python 3.11
 - Django REST Framework
