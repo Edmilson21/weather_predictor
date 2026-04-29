@@ -12,6 +12,7 @@ API REST para predecir la temperatura basada en datos climáticos, construida co
 ## Tecnologías
 - Python 3.11
 - Django REST Framework
+- Pandas + Numpy (Data Cleaning)
 - scikit-learn (Random Forest Regressor)
 - Docker
 - Render (deploy)
