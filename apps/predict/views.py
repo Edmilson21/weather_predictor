@@ -6,11 +6,11 @@ from rest_framework import status
 from .serializers import PredictionSerializer
 from django.shortcuts import render
 import os
-from apps.predict.train import entrenar_modelo
+#from apps.predict.train import entrenar_modelo
 
 # Cargar el modelo entrenado
-if not os.path.exists('modelo/weather_model.pkl'):
-    entrenar_modelo()
+#if not os.path.exists('modelo/weather_model.pkl'):
+    #entrenar_modelo()
 
 model = joblib.load('modelo/weather_model.pkl')
 
