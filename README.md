@@ -5,6 +5,9 @@ API REST para predecir la temperatura basada en datos climáticos, construida co
 ## Demo en vivo
 [https://weather-predictor-p8qp.onrender.com/weather/](https://weather-predictor-p8qp.onrender.com/weather/)
 
+## Interfaz
+<img width="867" height="878" alt="Captura de pantalla (228)" src="https://github.com/user-attachments/assets/09e9bae7-5c12-48d8-9d16-778ef18038c4" />
+<hr>
 ## Tecnologías
 - Python 3.11
 - Django REST Framework
